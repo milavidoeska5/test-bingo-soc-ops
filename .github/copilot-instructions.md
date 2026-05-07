@@ -65,6 +65,77 @@ tests/                   # pytest (test_api.py, test_game_logic.py)
 
 ---
 
+## 🌌 Design Guide — Space Galaxy Theme
+
+The current visual design is a **deep-space galaxy** aesthetic. Preserve and extend it when making UI changes.
+
+### Palette (CSS variables in `app/static/css/app.css`)
+
+| Variable | Value | Role |
+|---|---|---|
+| `--space-0` | `#020814` | Deepest bg (modal overlay, button text) |
+| `--space-1` | `#050a18` | Body background base |
+| `--space-2` | `#0a1628` | Card / cell backgrounds |
+| `--cyan` | `#00e5ff` | Primary accent — titles, glows, CTAs |
+| `--gold` | `#ffd700` | Win state — winning cells, modal, logo pulse |
+| `--violet` | `#a855f7` | Free space — subtle third accent |
+| `--green` | `#00ff88` | Marked cells |
+| `--text-bright` | `#e8f4ff` | Primary readable text |
+| `--text-mid` | `#8dafc8` | Secondary / body text |
+| `--text-dim` | `#4a6a8a` | Hints, instructions |
+
+### Typography
+
+| Font | Import | Usage |
+|---|---|---|
+| **Orbitron** | Google Fonts | Headings, buttons, labels — sci-fi display |
+| **Exo 2** | Google Fonts | Body text, how-to items — readable sci-fi |
+
+### Animations (CSS-only, no JS)
+
+| Name | Target | Effect |
+|---|---|---|
+| `nebulaDrift` | `body` bg | Slow breathing nebula gradient |
+| `starDrift1/2` | `body::before/after` | Two layers of tiled star dots drifting |
+| `logoPulse` | `.cosmic-logo` | Gold ✦ logo breathes with glow |
+| `winPulse` | `.cell-winning` | Gold cells pulse on winning line |
+| `goldPulse` | `.bingo-banner` | Banner glows on bingo |
+| `modalReveal` | `.modal-card` | Scale+fade-in on bingo modal open |
+| `starSpin` | `.modal-star` | ✦ star rotates in modal |
+| `ringRotate` | `.modal-ring` | Conic gradient border orbits modal card |
+
+### Key Component Classes
+
+| Class | Description |
+|---|---|
+| `.title-cosmic` | Orbitron, cyan glow — main page title |
+| `.cosmic-logo` | Gold pulsing ✦ symbol |
+| `.subtitle-cosmic` | Spaced uppercase subtitle |
+| `.card-glass` | Dark glassmorphism card with cyan border |
+| `.btn-launch` | Cyan gradient CTA button with glow |
+| `.btn-continue` | Same as btn-launch, used in modal |
+| `.space-header` | Dark blurred header bar |
+| `.space-header-title` | Orbitron header brand text |
+| `.btn-back` | Dim text back/exit button |
+| `.bingo-banner` | Gold banner strip with pulse animation |
+| `.cell-default` | Default board cell — dark glass, cyan hover glow |
+| `.cell-marked` | Marked cell — green tint + glow |
+| `.cell-winning` | Winning line cell — gold pulse animation |
+| `.cell-free` | Center free space — violet tint |
+| `.modal-overlay` | Dark radial-gradient fullscreen overlay |
+| `.modal-card` | Glassmorphism bingo win card |
+| `.modal-ring` | Rotating conic gradient ring behind card |
+
+### Rules for Extending the Design
+
+- **Always use CSS variables** — never hardcode `#00e5ff` or `rgba(0,229,255,...)` directly
+- **Glassmorphism pattern:** `background: rgba(10, 22, 40, 0.7); backdrop-filter: blur(Npx); border: 1px solid rgba(0,229,255,0.2);`
+- **Glow pattern:** `box-shadow: 0 0 Npx var(--cyan-glow)` or `text-shadow: 0 0 20px var(--gold-glow)`
+- **Keep animations CSS-only** — no JavaScript for visual effects
+- **Use ✦ (U+2726)** as the star/bullet symbol throughout the UI (not ★ or •)
+
+---
+
 ## 🎮 Game Rules
 
 - **Board:** 5×5 grid, center is free space
