@@ -13,6 +13,39 @@
         <div class="w-16"></div>
     </header>
 
+    {% if session.is_scavenger_hunt %}
+    <p class="instruction-text">
+        Check off each question as you find someone who matches it.
+    </p>
+
+    <div class="flex-1 p-3">
+        <div class="card-glass max-w-md mx-auto">
+            <div class="flex items-center justify-between mb-3">
+                <h2 class="how-to-title">Scavenger Hunt</h2>
+                <span class="subtitle-cosmic">{{ session.scavenger_hunt_completed_count }} / {{ session.scavenger_hunt_total_count }} complete</span>
+            </div>
+
+            <div class="mb-4 rounded bg-gray-100">
+                <div class="progress-meter-fill py-1.5 rounded bg-accent" style="width: {{ session.scavenger_hunt_progress_percent }}%"></div>
+            </div>
+
+            <div class="space-y-2">
+                {% for square in session.board %}
+                    {% if not square.is_free_space %}
+                    <button
+                        hx-post="/toggle/{{ square.id }}"
+                        hx-target="#game-container"
+                        hx-swap="outerHTML"
+                        class="w-full p-3 rounded text-left {% if square.is_marked %}bg-marked border border-marked-border{% else %}cell-default{% endif %}">
+                        <span>{% if square.is_marked %}[x]{% else %}[ ]{% endif %}</span>
+                        <span>{{ square.text }}</span>
+                    </button>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% else %}
     <!-- Instructions -->
     <p class="instruction-text">
         Tap a square when you find someone who matches it.
@@ -29,9 +62,10 @@
     <div class="flex-1 flex items-center justify-center p-3">
         {% include "components/bingo_board.html" %}
     </div>
+    {% endif %}
 </div>
 
-{% if session.show_bingo_modal %}
+{% if session.show_completion_modal %}
     {% include "components/bingo_modal.html" %}
 {% endif %}
 </div>

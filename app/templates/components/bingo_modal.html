@@ -2,8 +2,8 @@
     <div class="modal-card relative">
         <div class="modal-ring"></div>
         <div class="modal-star">✦</div>
-        <h2 class="modal-title">BINGO!</h2>
-        <p class="modal-subtitle">Mission Complete!</p>
+        <h2 class="modal-title">{{ session.completion_title }}</h2>
+        <p class="modal-subtitle">{{ session.completion_subtitle }}</p>
 
         <button
             hx-post="/dismiss-modal"

@@ -67,3 +67,16 @@ def check_bingo(board: list[BingoSquareData]) -> BingoLine | None:
 def get_winning_square_ids(line: BingoLine | None) -> set[int]:
     """Get the square IDs that are part of a winning line."""
     return set(line.squares) if line else set()
+
+
+def get_scavenger_hunt_progress(board: list[BingoSquareData]) -> tuple[int, int]:
+    """Return completed and total question counts for scavenger hunt mode."""
+    question_squares = [square for square in board if not square.is_free_space]
+    completed = sum(square.is_marked for square in question_squares)
+    return completed, len(question_squares)
+
+
+def check_scavenger_hunt_complete(board: list[BingoSquareData]) -> bool:
+    """Return True when every non-free-space question has been marked."""
+    completed, total = get_scavenger_hunt_progress(board)
+    return total > 0 and completed == total

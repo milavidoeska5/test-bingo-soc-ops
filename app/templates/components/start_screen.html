@@ -14,13 +14,25 @@
             </ul>
         </div>
 
-        <button
+        <form
             hx-post="/start"
             hx-target="#game-container"
             hx-swap="outerHTML"
-            class="btn-launch w-full">
-            Launch Mission
-        </button>
+            class="card-glass">
+            <h2 class="how-to-title mb-3">Choose Mode</h2>
+            <label class="how-to-item text-left mb-2" for="mode-bingo">
+                <input id="mode-bingo" type="radio" name="mode" value="bingo" checked>
+                Social Bingo
+            </label>
+            <label class="how-to-item text-left mb-4" for="mode-scavenger-hunt">
+                <input id="mode-scavenger-hunt" type="radio" name="mode" value="scavenger_hunt">
+                Scavenger Hunt
+            </label>
+
+            <button type="submit" class="btn-launch w-full">
+                Launch Mission
+            </button>
+        </form>
     </div>
 </div>
 </div>

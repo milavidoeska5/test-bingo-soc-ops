@@ -1,5 +1,6 @@
 import uuid
 from pathlib import Path
+from urllib.parse import parse_qs
 
 from fastapi import FastAPI, Request, Response
 from fastapi.responses import HTMLResponse
@@ -8,7 +9,7 @@ from fastapi.templating import Jinja2Templates
 from starlette.middleware.sessions import SessionMiddleware
 
 from app.game_service import GameSession, get_session
-from app.models import GameState
+from app.models import GameMode, GameState
 
 BASE_DIR = Path(__file__).resolve().parent
 
@@ -26,22 +27,29 @@ def _get_game_session(request: Request) -> GameSession:
     return get_session(request.session["session_id"])
 
 
+def _template_context(session: GameSession) -> dict[str, object]:
+    return {"session": session, "GameMode": GameMode, "GameState": GameState}
+
+
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request) -> Response:
     session = _get_game_session(request)
-    return templates.TemplateResponse(
-        request,
-        "home.html",
-        {"session": session, "GameState": GameState},
-    )
+    return templates.TemplateResponse(request, "home.html", _template_context(session))
 
 
 @app.post("/start", response_class=HTMLResponse)
 async def start_game(request: Request) -> Response:
     session = _get_game_session(request)
-    session.start_game()
+    body = (await request.body()).decode()
+    form_data = parse_qs(body)
+    mode_value = form_data.get("mode", [GameMode.BINGO.value])[0]
+    try:
+        mode = GameMode(mode_value)
+    except ValueError:
+        mode = GameMode.BINGO
+    session.start_game(mode)
     return templates.TemplateResponse(
-        request, "components/game_screen.html", {"session": session}
+        request, "components/game_screen.html", _template_context(session)
     )
 
 
@@ -50,7 +58,7 @@ async def toggle_square(request: Request, square_id: int) -> Response:
     session = _get_game_session(request)
     session.handle_square_click(square_id)
     return templates.TemplateResponse(
-        request, "components/game_screen.html", {"session": session}
+        request, "components/game_screen.html", _template_context(session)
     )
 
 
@@ -59,9 +67,7 @@ async def reset_game(request: Request) -> Response:
     session = _get_game_session(request)
     session.reset_game()
     return templates.TemplateResponse(
-        request,
-        "components/start_screen.html",
-        {"session": session, "GameState": GameState},
+        request, "components/start_screen.html", _template_context(session)
     )
 
 
@@ -70,7 +76,7 @@ async def dismiss_modal(request: Request) -> Response:
     session = _get_game_session(request)
     session.dismiss_modal()
     return templates.TemplateResponse(
-        request, "components/game_screen.html", {"session": session}
+        request, "components/game_screen.html", _template_context(session)
     )
 
 

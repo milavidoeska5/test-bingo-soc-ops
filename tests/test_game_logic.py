@@ -1,3 +1,4 @@
+import app.game_logic as game_logic
 from app.data import FREE_SPACE, QUESTIONS
 from app.game_logic import (
     CENTER_INDEX,
@@ -132,3 +133,33 @@ class TestGetWinningSquareIds:
     def test_returns_square_ids(self) -> None:
         line = BingoLine(type="row", index=0, squares=[0, 1, 2, 3, 4])
         assert get_winning_square_ids(line) == {0, 1, 2, 3, 4}
+
+
+class TestScavengerHuntProgress:
+    def test_progress_starts_at_zero_of_twenty_four(self) -> None:
+        board = generate_board()
+
+        assert game_logic.get_scavenger_hunt_progress(board) == (0, 24)
+
+    def test_progress_counts_only_question_squares(self) -> None:
+        board = generate_board()
+        board = toggle_square(board, 0)
+        board = toggle_square(board, 1)
+
+        assert game_logic.get_scavenger_hunt_progress(board) == (2, 24)
+
+    def test_completion_requires_all_non_free_space_questions(self) -> None:
+        board = generate_board()
+        for square in board:
+            if not square.is_free_space:
+                board = toggle_square(board, square.id)
+
+        assert game_logic.check_scavenger_hunt_complete(board) is True
+
+    def test_completion_ignores_the_free_space_square(self) -> None:
+        board = generate_board()
+        for square in board:
+            if not square.is_free_space and square.id != 0:
+                board = toggle_square(board, square.id)
+
+        assert game_logic.check_scavenger_hunt_complete(board) is False
