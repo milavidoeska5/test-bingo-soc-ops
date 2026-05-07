@@ -20,6 +20,12 @@ class TestHomePage:
         assert "Scavenger Hunt" in response.text
         assert 'value="scavenger_hunt"' in response.text
 
+    def test_home_offers_card_deck_shuffle_mode(self, client: TestClient) -> None:
+        response = client.get("/")
+
+        assert "Card Deck Shuffle" in response.text
+        assert 'value="card_deck_shuffle"' in response.text
+
     def test_home_contains_start_screen(self, client: TestClient) -> None:
         response = client.get("/")
         assert "Soc Ops" in response.text
@@ -50,6 +56,17 @@ class TestStartGame:
         assert "Scavenger Hunt" in response.text
         assert "0 / 24 complete" in response.text
         assert "FREE SPACE" not in response.text
+
+    def test_start_card_deck_shuffle_returns_flip_card_view(
+        self, client: TestClient
+    ) -> None:
+        client.get("/")
+        response = client.post("/start", data={"mode": "card_deck_shuffle"})
+
+        assert response.status_code == 200
+        assert "Card Deck Shuffle" in response.text
+        assert "Tap to Shuffle" in response.text
+        assert 'hx-post="/shuffle/next"' in response.text
 
 
 class TestScavengerHunt:
@@ -85,6 +102,31 @@ class TestScavengerHunt:
         response = client.post("/start")
         # Count the toggle buttons (squares with hx-post="/toggle/")
         assert response.text.count('hx-post="/toggle/') == 24  # 24 + 1 free space
+
+
+class TestCardDeckShuffle:
+    def test_start_card_deck_shuffle_starts_with_zero_draws(
+        self, client: TestClient
+    ) -> None:
+        client.get("/")
+        response = client.post("/start", data={"mode": "card_deck_shuffle"})
+
+        assert response.status_code == 200
+        assert "0 draws" in response.text
+        assert 'class="shuffle-card-question"' in response.text
+
+    def test_draw_shuffle_card_increments_count_by_one(
+        self, client: TestClient
+    ) -> None:
+        client.get("/")
+        client.post("/start", data={"mode": "card_deck_shuffle"})
+
+        response = client.post("/shuffle/next")
+
+        assert response.status_code == 200
+        assert "Card Deck Shuffle" in response.text
+        assert "1 draw" in response.text
+        assert 'class="shuffle-card-question"' in response.text
 
 
 class TestToggleSquare:

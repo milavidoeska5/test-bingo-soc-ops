@@ -418,6 +418,116 @@ button:disabled { cursor: default; }
 }
 
 /* =====================================================
+   CARD DECK SHUFFLE
+   ===================================================== */
+
+.card-shuffle-panel {
+    width: min(100%, 28rem);
+}
+
+.shuffle-card-button {
+    padding: 0;
+    border-radius: 1rem;
+    width: 100%;
+}
+
+.shuffle-card-scene {
+    display: block;
+    perspective: 1200px;
+    width: 100%;
+}
+
+.shuffle-card-inner {
+    display: block;
+    position: relative;
+    width: 100%;
+    min-height: 17rem;
+    transform-style: preserve-3d;
+    transition: transform 0.75s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.shuffle-card-inner.is-flipped {
+    transform: rotateY(180deg);
+}
+
+.shuffle-card-face {
+    display: flex;
+    position: absolute;
+    inset: 0;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 1rem;
+    border: 1px solid rgba(0, 229, 255, 0.3);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    overflow: hidden;
+    box-shadow:
+        0 0 28px rgba(0, 229, 255, 0.15),
+        0 12px 30px rgba(0, 0, 0, 0.45);
+}
+
+.shuffle-card-front {
+    background:
+        radial-gradient(circle at 20% 15%, rgba(0, 229, 255, 0.2) 0%, transparent 45%),
+        radial-gradient(circle at 80% 75%, rgba(168, 85, 247, 0.22) 0%, transparent 50%),
+        linear-gradient(145deg, rgba(10, 22, 40, 0.96), rgba(5, 10, 24, 0.98));
+}
+
+.shuffle-card-back {
+    transform: rotateY(180deg);
+    background:
+        radial-gradient(circle at 78% 15%, rgba(0, 255, 136, 0.14) 0%, transparent 40%),
+        radial-gradient(circle at 20% 85%, rgba(0, 229, 255, 0.2) 0%, transparent 42%),
+        linear-gradient(145deg, rgba(10, 22, 40, 0.96), rgba(5, 10, 24, 0.98));
+    padding: 1.5rem;
+}
+
+.shuffle-card-badge {
+    font-family: 'Orbitron', sans-serif;
+    color: var(--cyan);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 0.72rem;
+}
+
+.shuffle-card-star {
+    color: var(--gold);
+    font-size: 3.5rem;
+    margin-top: 0.8rem;
+    text-shadow: 0 0 22px var(--gold-glow), 0 0 42px rgba(255, 215, 0, 0.35);
+    animation: shuffleStarPulse 2.4s ease-in-out infinite;
+}
+
+@keyframes shuffleStarPulse {
+    0%, 100% { transform: scale(1) rotate(0deg); }
+    50% { transform: scale(1.08) rotate(8deg); }
+}
+
+.shuffle-card-question {
+    color: var(--text-bright);
+    text-align: center;
+    font-size: 1.15rem;
+    line-height: 1.45;
+    font-weight: 600;
+    text-wrap: balance;
+}
+
+.shuffle-card-button:active .shuffle-card-inner {
+    transform: rotateY(180deg) scale(0.99);
+}
+
+@media (max-width: 480px) {
+    .shuffle-card-inner {
+        min-height: 15rem;
+    }
+
+    .shuffle-card-question {
+        font-size: 1rem;
+    }
+}
+
+/* =====================================================
    BINGO MODAL
    ===================================================== */
 

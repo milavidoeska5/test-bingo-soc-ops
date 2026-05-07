@@ -13,7 +13,39 @@
         <div class="w-16"></div>
     </header>
 
-    {% if session.is_scavenger_hunt %}
+    {% if session.is_card_deck_shuffle %}
+    <p class="instruction-text">
+        Tap the card to flip and draw a new random social prompt.
+    </p>
+
+    <div class="flex-1 flex items-center justify-center p-3">
+        <div class="card-glass max-w-md mx-auto card-shuffle-panel">
+            <div class="flex items-center justify-between mb-3">
+                <h2 class="how-to-title">Card Deck Shuffle</h2>
+                <span class="subtitle-cosmic">{{ session.card_shuffle_draw_count }} {% if session.card_shuffle_draw_count == 1 %}draw{% else %}draws{% endif %}</span>
+            </div>
+
+            <button
+                hx-post="/shuffle/next"
+                hx-target="#game-container"
+                hx-swap="outerHTML"
+                class="shuffle-card-button w-full"
+                aria-label="Draw another random question">
+                <span class="shuffle-card-scene">
+                    <span class="shuffle-card-inner {% if session.card_shuffle_flip_state %}is-flipped{% endif %}">
+                        <span class="shuffle-card-face shuffle-card-front">
+                            <span class="shuffle-card-badge">Tap to Shuffle</span>
+                            <span class="shuffle-card-star">✦</span>
+                        </span>
+                        <span class="shuffle-card-face shuffle-card-back">
+                            <span class="shuffle-card-question">{{ session.card_shuffle_current_text }}</span>
+                        </span>
+                    </span>
+                </span>
+            </button>
+        </div>
+    </div>
+    {% elif session.is_scavenger_hunt %}
     <p class="instruction-text">
         Check off each question as you find someone who matches it.
     </p>

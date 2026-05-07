@@ -62,6 +62,15 @@ async def toggle_square(request: Request, square_id: int) -> Response:
     )
 
 
+@app.post("/shuffle/next", response_class=HTMLResponse)
+async def draw_shuffle_card(request: Request) -> Response:
+    session = _get_game_session(request)
+    session.draw_next_card_shuffle_prompt()
+    return templates.TemplateResponse(
+        request, "components/game_screen.html", _template_context(session)
+    )
+
+
 @app.post("/reset", response_class=HTMLResponse)
 async def reset_game(request: Request) -> Response:
     session = _get_game_session(request)
